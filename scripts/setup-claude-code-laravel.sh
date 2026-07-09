@@ -2164,9 +2164,10 @@ main() {
     
     install_memory
     cd "$ORIGINAL_DIR"
-    
-    install_debugbar_mcp
-    cd "$ORIGINAL_DIR"
+
+    # Temporarily disabled because https://github.com/021-factory/laravel-debugbar-mcp.git is 404
+    #install_debugbar_mcp
+    #cd "$ORIGINAL_DIR"
 
     install_figma
     cd "$ORIGINAL_DIR"
