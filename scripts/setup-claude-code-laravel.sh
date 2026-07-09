@@ -900,7 +900,7 @@ configure_figma_mcp() {
     if ! claude mcp list 2>/dev/null | grep -q "^figma:"; then
         print_status "Adding global Figma MCP server..."
         # Remove the -y flag that was causing the error
-        if claude mcp add "figma" npx figma-developer-mcp --figma-api-key="$FIGMA_ACCESS_TOKEN" --stdio; then
+        if claude mcp add "figma" -- npx figma-developer-mcp --figma-api-key="$FIGMA_ACCESS_TOKEN" --stdio; then
             print_success "Global Figma MCP server added"
         else
             print_warning "Failed to add Figma MCP server via CLI, trying config file method..."
@@ -911,7 +911,7 @@ configure_figma_mcp() {
             else
                 print_warning "⚠️  Could not configure Figma MCP automatically"
                 print_status "You can configure it manually later by running:"
-                echo "  claude mcp add figma npx figma-developer-mcp --figma-api-key=YOUR_TOKEN --stdio"
+                echo "  claude mcp add figma -- npx figma-developer-mcp --figma-api-key=YOUR_TOKEN --stdio"
                 return 0  # Don't fail the entire installation
             fi
         fi
@@ -1171,9 +1171,11 @@ install_debugbar_mcp() {
 parse_env() {
     print_status "Parsing Laravel .env file..."
     
-    # Source the .env file
+    # Source the .env file safely (respects quotes, spaces, comments)
     if [ -f ".env" ]; then
-        export $(grep -v '^#' .env | xargs)
+        set -a
+        source .env
+        set +a
     fi
     
     # Get database connection details
